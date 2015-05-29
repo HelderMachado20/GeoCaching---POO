@@ -1,0 +1,20 @@
+#BlueJ class context
+comment0.params=
+comment0.target=MultiCache()
+comment1.params=cod\ data\ descricao\ cor\ criador\ obj\ lista
+comment1.target=MultiCache(java.lang.String,\ java.util.GregorianCalendar,\ java.lang.String,\ Coordenadas,\ java.lang.String,\ java.lang.String,\ java.util.ArrayList)
+comment2.params=mc
+comment2.target=MultiCache(MultiCache)
+comment3.params=
+comment3.target=java.lang.String\ getObjeto()
+comment3.text=\n\ GETTERS\n
+comment4.params=
+comment4.target=java.util.ArrayList\ getListaCoord()
+comment5.params=o
+comment5.target=void\ setObjeto(java.lang.String)
+comment5.text=\n\ SETTERS\n
+comment6.params=lista
+comment6.target=void\ setListaCoord(java.util.ArrayList)
+comment7.params=
+comment7.target=java.lang.String\ toString()
+numComments=8

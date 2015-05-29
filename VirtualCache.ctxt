@@ -1,0 +1,10 @@
+#BlueJ class context
+comment0.params=
+comment0.target=VirtualCache()
+comment1.params=cod\ data\ descricao\ cor\ criador
+comment1.target=VirtualCache(java.lang.String,\ java.util.GregorianCalendar,\ java.lang.String,\ Coordenadas,\ java.lang.String)
+comment2.params=mc
+comment2.target=VirtualCache(VirtualCache)
+comment3.params=
+comment3.target=java.lang.String\ toString()
+numComments=4
