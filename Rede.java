@@ -16,6 +16,7 @@ public class Rede implements Serializable
 {
     private HashMap<String,Utilizador> users; //<email,utilizador>
     private HashMap<String,Cache> caches;       //<codigo da cache, cache>
+    private ArrayList<Report> reports;     //lista de reports feitos a caches
     private Utilizador admin;
     
     public Rede(){
@@ -69,8 +70,14 @@ public class Rede implements Serializable
         return users.containsKey(mail);
     }
     
-    public Utilizador getUser(String email){
-        return users.get(email);
+    public Utilizador getUser(String email) throws Excepcoes{
+        Utilizador u = users.get(email);
+        if (u==null){
+            throw new Excepcoes("Utilizador não existe");
+        }
+        else{
+            return u;
+        }
     }
     
     public void removeAmigo(String email_amigo, String email) throws Excepcoes {
@@ -204,5 +211,27 @@ public class Rede implements Serializable
         catch( Excepcoes e ){
            throw e; 
         }
+    }
+    
+    public void insereReport(String email, String cod, String motivo)   {
+        Report rep = new Report(email, motivo, cod);
+        this.reports.add(rep);     
+        
+    }
+    
+    public ArrayList<Report> getReports(){ return this.reports; }
+    
+    public void setReports(ArrayList<Report> rep) { this.reports = new ArrayList<>(rep); }
+    
+    public void removeCache(String email, String cod) throws Excepcoes{
+        Cache ca = caches.get(cod);
+        
+        if(ca==null){ throw new Excepcoes("Cache não existe"); }
+       
+        if(!ca.getCriador().equals(email) && !email.equals("admin@geocachingpoo.pt")) { //Se não for o criador da cache nem o admin
+            throw new Excepcoes("Não tem permissão para remover esta cache!");
+        }
+           
+        caches.remove(cod);        
     }
 }

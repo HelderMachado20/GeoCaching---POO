@@ -1,0 +1,24 @@
+#BlueJ class context
+comment0.params=
+comment0.target=Report()
+comment1.params=em\ mot\ c
+comment1.target=Report(java.lang.String,\ java.lang.String,\ java.lang.String)
+comment10.params=
+comment10.target=java.lang.String\ toString()
+comment2.params=r
+comment2.target=Report(Report)
+comment3.params=
+comment3.target=java.lang.String\ getEmail()
+comment4.params=
+comment4.target=java.lang.String\ getMotivo()
+comment5.params=
+comment5.target=java.lang.String\ getCodCache()
+comment6.params=em
+comment6.target=void\ setEmail(java.lang.String)
+comment7.params=m
+comment7.target=void\ setMotivo(java.lang.String)
+comment8.params=c
+comment8.target=void\ setCodCache(java.lang.String)
+comment9.params=
+comment9.target=Report\ clone()
+numComments=11
