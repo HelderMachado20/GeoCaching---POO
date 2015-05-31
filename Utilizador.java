@@ -250,6 +250,36 @@ public class Utilizador implements Serializable
         return ultimas;
     }
     
+     public ArrayList<Atividade> ordenaAtividades(){
+        ArrayList<Atividade> listaAts = new ArrayList<>(atividades.size());
+        Atividade at;
+        int i;
+        for(String c : atividades.keySet()){
+            
+            at = atividades.get(c).clone();
+            
+            if(listaAts.size()==0){
+                listaAts.add(at);
+            }
+            else{
+                
+                for(i=0 ; i<listaAts.size() ; i++){
+                    if(   comparaData(  at.getData() , listaAts.get(i).getData()  ) == true   ) {
+                        Atividade aux = listaAts.get(i).clone();
+                        listaAts.set(i,at.clone());  //põe at na posição i;
+                        at = aux; //
+                    }
+                }
+                
+                if(i<10){
+                    listaAts.add(at);
+                }
+                
+            }
+        }
+        
+        return listaAts;
+    }
     
     public Utilizador clone(){
         return new Utilizador(this);

@@ -196,7 +196,7 @@ public class Rede implements Serializable
     }
     
     
-    public ArrayList<Atividade> getAtividades(String email){
+    public ArrayList<Atividade> getDezAtividades(String email){
         Utilizador ut = users.get(email);
         return ut.ultimasDez();
     }
@@ -234,4 +234,10 @@ public class Rede implements Serializable
            
         caches.remove(cod);        
     }
+    
+    public ArrayList<Atividade> getAtividades(String email){
+        Utilizador ut = users.get(email);
+        return ut.ordenaAtividades();
+    }
+    
 }

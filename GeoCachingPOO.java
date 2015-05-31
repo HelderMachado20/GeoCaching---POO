@@ -503,35 +503,23 @@ public class GeoCachingPOO implements Serializable
         int op = -1;        
         while(op!=0){
             title();
-            System.out.println("1  - Criar cache\n2 - Remover Cache\n3  - Registar nova atividade\n4  - Consultar caches\n5  - Últimas 10 atividades\n"+
-                               "6  - Últimas 10 atividades de um amigo\n7  - Report Abuse\n8  - Consultar todas as atividades\n9  - Remover atividade\n"+
-                               "10  - Estatísticas Mensais\n11 - Estatísticas Anuais\n12 - Consultar Reports(Admin)\n0 - Sair\n");
+            System.out.println("1  - Criar cache\n2 - Remover Cache\n3  - Consultar caches\n4  - Registar nova atividade\n5  - Últimas 10 atividades\n"+
+                               "6  - Últimas 10 atividades de um amigo\n7  - Consultar todas as atividades\n8  - Consultar todas as atividades de um amigo\n"+
+                               "9  - Remover atividade\n10  - Estatísticas Mensais\n11 - Estatísticas Anuais\n12 - Report Abuse\n13 - Consultar Reports(Admin)\n0 - Sair\n");
             op = input.lerInt();
             switch(op){
                 case 0 : { break; }
                 case 1 : { menuCriarCache(); break; }
-                case 3 : { registaAtividade(); break; }
-                case 4 : { HashMap<String,Cache> cc = new HashMap<>(rede.getCaches());                           
-                           System.out.println("_______________________________________________________\n"); 
-                           for(String cod : cc.keySet()){
-                               System.out.println(cc.get(cod).toString());
-                               System.out.println("---------\n");
-                            }                           
-                           System.out.println("_______________________________________________________\n");
-                           break;
-                         }
-                case 5 : {  ultimasDez(user.getEmail());
-                            break;
-                         }
-                case 6 : { ultimasDezAmigo();
-                           break;                    
-                         }
-                case 7 : { fazerReport();
-                           break;
-                         }
-                case 12: { menuReports();
-                           break;
-                         }
+                case 2 : { removerCache(); break; }
+                case 3 : { consultaCaches(); break; }
+                case 4 : { registaAtividade(); break; }
+                case 5 : { ultimasDez(user.getEmail()); break; }
+                case 6 : { atividadesAmigo(6); break; }
+                case 7 : { consultaAtividades(user.getEmail()); break; }
+                case 8 : { atividadesAmigo(8); break; }
+                case 9 : { removeAtividade(); break; }                
+                case 12: { fazerReport(); break; }
+                case 13: { menuReports(); break;}
                 default: { System.out.println("Opção inválida!\n");}                 
             }
             System.out.println("Prima ENTER para continuar...."); input.lerString();
@@ -812,7 +800,17 @@ public class GeoCachingPOO implements Serializable
         
     }
     
-    public static void ultimasDezAmigo(){
+    public static void consultaCaches(){
+        HashMap<String,Cache> cc = new HashMap<>(rede.getCaches());                           
+        System.out.println("_______________________________________________________\n"); 
+        for(String cod : cc.keySet()){
+            System.out.println(cc.get(cod).toString());
+            System.out.println("---------\n");
+        }                           
+        System.out.println("_______________________________________________________\n");
+    }
+    
+    public static void atividadesAmigo(int op){
         String email;
         Utilizador ut;
         
@@ -822,7 +820,14 @@ public class GeoCachingPOO implements Serializable
         try{
             ut = rede.getUser(email);
             if( rede.existeAmigo(email, user.getEmail() )   ){
-                ultimasDez(email);
+                if(op==6) {
+                    ultimasDez(email);
+                } else if(op==8) {
+                            consultaAtividades(email);
+                        } else {
+                                System.out.println("Erro desconhecido");
+                              }
+               
             }
             else {
                 System.out.println("Este utilizador não é seu amigo. Não pode efetuar esta consultar!");
@@ -836,7 +841,7 @@ public class GeoCachingPOO implements Serializable
     
     public static void ultimasDez(String email){
         int op = -1;
-        ArrayList<Atividade> ats = new ArrayList<>(rede.getAtividades(email));
+        ArrayList<Atividade> ats = new ArrayList<>(rede.getDezAtividades(email));
         System.out.println("_______________________________________________________\n");
         for(Atividade at : ats){
             System.out.println("-"+at.getCodCache()+"\n");
@@ -861,6 +866,7 @@ public class GeoCachingPOO implements Serializable
                     }
                 }   
             }
+            else if(op!=0 && op !=1) { System.out.println("Opção inválida"); }
         }
         
     }
@@ -886,21 +892,32 @@ public class GeoCachingPOO implements Serializable
     
     public static void menuReports(){        
         int op = -1;
-        System.out.println("São necessárias as credenciais de Admin!\nInsira email:\n");
-        String email = input.lerString();
-        System.out.println("Insira password: \n");
-        String pass = input.lerString();
+        String email, pass;
+        Utilizador u;
         
-        Utilizador u;        
-        try{
-            u = rede.getUser(email);            
-        } catch(Excepcoes e){
-            System.out.println(e);
-            return;
-        }
+        /*
+         * Se o user atual for o admin dá automaticamente acesso ao menu dos reports, caso contrário pede as credenciais de admin.
+         * Isto permite a um utilizador (que seja admin) poder fazer alterações acessíveis ao admin sem a necessidade de fazer 
+         * logout da sua conta e voltar a fazer login com a conta de admin.
+         */
+        if(user.getEmail().equals("admin@geocachingpoo.pt")) { email = user.getEmail(); }
+        else {
+            System.out.println("São necessárias as credenciais de Admin!\nInsira email:\n");
+            email = input.lerString();
+            System.out.println("Insira password: \n");
+            pass = input.lerString();
+                
+            try{
+                u = rede.getUser(email);            
+            } catch(Excepcoes e){
+                System.out.println(e);
+                return;
+            }
         
-        if(u.validaLogin(pass)==false){
-            System.out.println("Credenciais inválidas!");
+            if(u.validaLogin(pass)==false){
+                System.out.println("Credenciais inválidas!");
+                return;
+            }
         }
         
          ArrayList<Report> rep = new ArrayList<>(rede.getReports());
@@ -939,7 +956,10 @@ public class GeoCachingPOO implements Serializable
                                }
                            }                           
                            if(flag==0) { System.out.println("Não existem reports para essa cache"); }
-                           else{ try { rede.removeCache(email,cod);} catch(Excepcoes e) { System.out.println(e); break; } } //em princípio não deve dar excepção nesta linha
+                           else{ try { 
+                              rede.removeCache(email,cod);  //usamos o método da classe rede em vez do método removerCache criada em baixo porque esse mesmo método
+                                                            //usa o email do user atual e neste caso podemos aceder com as credenciais de admin e estar 'logados' com outra conta
+                            } catch(Excepcoes e) { System.out.println(e); break; } } //em princípio não deve dar excepção nesta linha
                            
                            System.out.println("Cache removida com sucesso. Todos os reports sobre esta cache foram removidos");
                            
@@ -950,7 +970,57 @@ public class GeoCachingPOO implements Serializable
             
         }
         
-        rede.setReports(rep);
+        rede.setReports(rep); //para guardar a lista de reports anterior pela nova lista atualizada
+    }
+    
+    public static void removerCache(){
+        String cod;
+        System.out.println("Insira código da cache a remover: ");
+        cod = input.lerString();
+        try{
+            rede.removeCache(user.getEmail(), cod);
+        } catch(Excepcoes e) {
+            System.out.println(e);
+            return;
+        }
+        
+        System.out.println("Cache removida com sucesso!");
+    }
+    
+    public static void consultaAtividades(String email){
+        int op = -1;
+        ArrayList<Atividade> ats = new ArrayList<>(rede.getAtividades(email));
+        System.out.println("_______________________________________________________\n");
+        for(Atividade at : ats){
+            System.out.println("-"+at.getCodCache()+"\n");
+        }                               
+        System.out.println("_______________________________________________________\n");
+        
+        while(op!=0){
+            System.out.println("1 - Ver uma destas caches em detalhe\n0 - Sair");
+            op = input.lerInt();
+            if(op == 1){
+                int i = 0;
+                System.out.println("Insira código: ");
+                String cod = input.lerString();
+                Atividade x;
+                for(i = 0; i < ats.size(); i++){
+                    x = ats.get(i);
+                    if(x.getCodCache().equals(cod)){
+                        System.out.println(x.toString());
+                    }
+                    else if (i == ats.size()-1){
+                        System.out.println("Código não existe nas atividades");
+                    }
+                }   
+            }
+            else if(op!=0 && op !=1) { System.out.println("Opção inválida"); }
+        }
+        
+    }
+    
+    public static void removeAtividade(){
+        
     }
     
     /********************************************************************************************************************************************************************
