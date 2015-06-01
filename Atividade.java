@@ -63,6 +63,8 @@ public class Atividade implements Serializable
     public String getObjRet()       { return this.obj_retirado; }
     public String getObjCol()       { return this.obj_colocado; }
     public GregorianCalendar getData() { return this.data;      }
+    public int getAno() { return this.data.get(Calendar.YEAR); }
+    public int getMes() { return this.data.get(Calendar.MONTH); }
     
     /*
      * SETTERS
@@ -90,7 +92,7 @@ public class Atividade implements Serializable
     }
     
     public String dataString(){        
-        return (data.get(Calendar.YEAR)+"/"+(data.get(Calendar.MONTH)+1)+"/"+data.get(Calendar.DAY_OF_MONTH)+"\n");  
+        return (data.get(Calendar.YEAR)+"/"+(data.get(Calendar.MONTH)+1)+"/"+data.get(Calendar.DAY_OF_MONTH));  
     }
     
     public Atividade clone(){

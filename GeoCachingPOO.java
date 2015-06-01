@@ -235,7 +235,7 @@ public class GeoCachingPOO implements Serializable
                                System.out.println("\n_____________________________________\n"); 
                                for(String email : am){
                                    try{
-                                   ut = rede.getUser(email);
+                                       ut = rede.getUser(email);
                                        System.out.println(email+" - "+ut.getNome());
                                     }
                                    catch(Excepcoes e){
@@ -517,14 +517,14 @@ public class GeoCachingPOO implements Serializable
                 case 6 : { atividadesAmigo(6); break; }
                 case 7 : { consultaAtividades(user.getEmail()); break; }
                 case 8 : { atividadesAmigo(8); break; }
-                case 9 : { removeAtividade(); break; }                
+                case 9 : { removeAtividade(); break; }    
+                case 10: { statsMensais(user.getEmail()); break; }
                 case 12: { fazerReport(); break; }
                 case 13: { menuReports(); break;}
                 default: { System.out.println("Opção inválida!\n");}                 
             }
             System.out.println("Prima ENTER para continuar...."); input.lerString();
         }
-        
     }
     
     /**
@@ -665,8 +665,7 @@ public class GeoCachingPOO implements Serializable
                                             flagC = 1; }
             else { System.out.println("Coordenada Inválida! Prima ENTER para voltar a tentar....\n"); input.lerString(); }
         }
-        flagC = 0;
-         
+        flagC = 0;         
         while(flagC!=1){
             System.out.println("Coordenadas:\nLongitude -> grau min seg direcao: ");
             System.out.print("grau: ");
@@ -681,8 +680,7 @@ public class GeoCachingPOO implements Serializable
                                             cor.setLon(lon); 
                                             flagC = 1; }
             else { System.out.println("Coordenada Inválida! Prima ENTER para voltar a tentar....\n"); input.lerString(); }
-        }
-        
+        }        
         return cor;
     }
     
@@ -841,7 +839,8 @@ public class GeoCachingPOO implements Serializable
     
     public static void ultimasDez(String email){
         int op = -1;
-        ArrayList<Atividade> ats = new ArrayList<>(rede.getDezAtividades(email));
+        ArrayList<Atividade> ats = new ArrayList<>(rede.getDezAtividades(email));        
+        System.out.println("        *** 10 ATIVIDADES MAIS RECENTES ***            \n");
         System.out.println("_______________________________________________________\n");
         for(Atividade at : ats){
             System.out.println("Data: "+ at.dataString() + " | Atividade: "+at.getNome()+"\n");
@@ -859,7 +858,9 @@ public class GeoCachingPOO implements Serializable
                 for(i = 0; i < ats.size(); i++){
                     x = ats.get(i);
                     if(x.getNome().equals(cod)){
+                        System.out.println("--------------------------------------\n");
                         System.out.println(x.toString());
+                        System.out.println("--------------------------------------\n");
                     }
                     else if (i == ats.size()-1){
                         System.out.println("Código não existe nas últimas 10 atividades");
@@ -990,9 +991,10 @@ public class GeoCachingPOO implements Serializable
     public static void consultaAtividades(String email){
         int op = -1;
         ArrayList<Atividade> ats = new ArrayList<>(rede.getAtividades(email));
+        System.out.println("           *** TODAS AS ATIVIDADES ***                 \n");
         System.out.println("_______________________________________________________\n");
         for(Atividade at : ats){
-            System.out.println("-"+at.getCodCache()+"\n");
+            System.out.println("Data: "+ at.dataString() + " | Atividade: "+at.getNome()+"\n");
         }                               
         System.out.println("_______________________________________________________\n");
         
@@ -1006,21 +1008,85 @@ public class GeoCachingPOO implements Serializable
                 Atividade x;
                 for(i = 0; i < ats.size(); i++){
                     x = ats.get(i);
-                    if(x.getCodCache().equals(cod)){
-                        System.out.println(x.toString());
+                    if(x.getNome().equals(cod)){                        
+                        System.out.println("--------------------------------------\n");
+                        System.out.println(x.toString());                        
+                        System.out.println("--------------------------------------\n");
                     }
                     else if (i == ats.size()-1){
-                        System.out.println("Código não existe nas atividades");
+                        System.out.println("Código não existe nas últimas 10 atividades");
                     }
                 }   
             }
             else if(op!=0 && op !=1) { System.out.println("Opção inválida"); }
-        }
-        
+        }                
     }
     
     public static void removeAtividade(){
         
+    }
+    
+    public static void statsMensais(String email){
+        ArrayList<ArrayList<Atividade>> stats = null;
+        int op = -1;
+        
+        try{
+           stats = rede.getStatsMensais(email);
+        } catch(Excepcoes e){
+            System.out.println(e);
+        }
+        
+        System.out.println("________________________________________\n");
+        for(int i = 0 ; i < stats.size() ; i++){
+            System.out.println("Mês "+(i+1)+": "+stats.get(i).size()+" atividades\n");
+        }
+        System.out.println("________________________________________\n");
+          
+        while(op!= 0 && op != 1){
+            System.out.println("1 - Consultar mês\n0 - Sair\n");
+            op = input.lerInt();
+            if(op==1){
+                System.out.println("Qual o mês a consultar (1..12)? (Prima 0 para sair)\n");
+                int mes = input.lerInt();
+                if(mes < 1 && op > mes) { System.out.println("Mês inválido\n"); }
+                else if( stats.get(mes).size() == 0) { System.out.println("Não existem atividades neste mês\n"); }
+                     else {
+                         mes--;
+                         consultaStatsMes(stats.get(mes));
+                        }
+                }
+            else if (op!=0){
+                System.out.println("Opção inválida\n");
+            }
+        }
+        
+    }
+    
+    public static void consultaStatsMes(ArrayList<Atividade> listames){
+        
+        for(Atividade at : listames){
+            System.out.print("Data: "+at.dataString()+" | Código/Nome: "+at.getNome()+"\n");
+        }
+        int op = -1;
+        
+        while(op!=0){
+            System.out.println("1 - Consultar detalhes de uma atividade\n0 - Sair\n");
+            if(op==1){
+                System.out.println("Insira código da cache: "); int cod = input.lerInt();
+                int flag = 0;
+                for(Atividade at : listames){
+                    if(at.getNome().equals(cod)){
+                        System.out.println("----------------------------------\n");
+                        System.out.println(at.toString());
+                        System.out.println("----------------------------------\n");
+                        flag = 1; break;
+                    }
+                }
+                if(flag == 0) { System.out.println("Atividade não existe neste mês\n"); }
+            }
+            else if (op != 0) { System.out.println("Opção inválida\n"); }
+        }
+                
     }
     
     /********************************************************************************************************************************************************************

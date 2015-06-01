@@ -13,6 +13,7 @@ import java.util.TreeSet;
 import java.util.TreeMap;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 
 public class Utilizador implements Serializable
 {
@@ -286,6 +287,26 @@ public class Utilizador implements Serializable
     }
     
     
+    public ArrayList<ArrayList<Atividade>> statsMensais() throws Excepcoes{
+        if (atividades.size()==0) { throw new Excepcoes("Não tem nenhuma atividade registada"); }
+        else {
+            ArrayList<ArrayList<Atividade>> stats = new ArrayList<>(12);
+            int tam = atividades.size(), ano, ano_atual, mes;
+            String cod;
+            Atividade at;
+            
+            ano_atual = Calendar.getInstance().get(Calendar.YEAR);
+            for(int i = 0 ; i < tam ; i++){
+                at = atividades.get(i).clone();
+                ano = at.getAno();
+                mes = at.getMes();
+                if(ano == ano_atual){ stats.get(mes).add(at); }
+            }
+        
+            return stats;
+        }
+    }
+    
     public String toString(){
         StringBuilder s = new StringBuilder();
         
@@ -308,14 +329,11 @@ public class Utilizador implements Serializable
         s.append("Lista de eventos em que participou: ");
         for(String cod : eventos){
             s.append(cod+" - ");
-        }*/
+        }*/ 
         s.append("\n_____________________________________");
         return s.toString();
     }
     
-   // public ArrayList<
-    
-
     private boolean comparaData(GregorianCalendar d1, GregorianCalendar d2){ //verifica se d1 é mais recente que d2
         boolean res = false;
         int ano1 = d1.get(Calendar.YEAR), mes1 = d1.get(Calendar.MONTH), dia1 = d1.get(Calendar.DAY_OF_MONTH);        

@@ -240,4 +240,37 @@ public class Rede implements Serializable
         return ut.ordenaAtividades();
     }
     
+    public ArrayList<ArrayList<Atividade>> getStatsMensais(String email) throws Excepcoes{
+        ArrayList<ArrayList<Atividade>> at;
+        try{
+             at = users.get(email).statsMensais();
+        }
+        catch(Excepcoes e){
+            throw e;
+        }
+        
+        return at;
+    }
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
 }
