@@ -44,9 +44,9 @@ public class Report
     public String toString(){
         StringBuilder s = new StringBuilder();
         
-        s.append("User que fez este report: "+email_user);        
-        s.append("Código da cache: "+cod_cache);
-        s.append("Motivo do report: "+motivo);
+        s.append("User que fez este report: "+email_user+"\n");        
+        s.append("Código da cache: "+cod_cache+"\n");
+        s.append("Motivo do report: "+motivo+"\n");
         
         return s.toString();
     }

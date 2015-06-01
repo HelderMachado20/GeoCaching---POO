@@ -89,6 +89,9 @@ public class Atividade implements Serializable
         return s.toString();
     }
     
+    public String dataString(){        
+        return (data.get(Calendar.YEAR)+"/"+(data.get(Calendar.MONTH)+1)+"/"+data.get(Calendar.DAY_OF_MONTH)+"\n");  
+    }
     
     public Atividade clone(){
         return new Atividade(this);

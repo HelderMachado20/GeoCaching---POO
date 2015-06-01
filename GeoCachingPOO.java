@@ -503,7 +503,7 @@ public class GeoCachingPOO implements Serializable
         int op = -1;        
         while(op!=0){
             title();
-            System.out.println("1  - Criar cache\n2 - Remover Cache\n3  - Consultar caches\n4  - Registar nova atividade\n5  - Últimas 10 atividades\n"+
+            System.out.println("1  - Criar cache\n2  - Remover Cache\n3  - Consultar caches\n4  - Registar nova atividade\n5  - Últimas 10 atividades\n"+
                                "6  - Últimas 10 atividades de um amigo\n7  - Consultar todas as atividades\n8  - Consultar todas as atividades de um amigo\n"+
                                "9  - Remover atividade\n10  - Estatísticas Mensais\n11 - Estatísticas Anuais\n12 - Report Abuse\n13 - Consultar Reports(Admin)\n0 - Sair\n");
             op = input.lerInt();
@@ -844,7 +844,7 @@ public class GeoCachingPOO implements Serializable
         ArrayList<Atividade> ats = new ArrayList<>(rede.getDezAtividades(email));
         System.out.println("_______________________________________________________\n");
         for(Atividade at : ats){
-            System.out.println("-"+at.getCodCache()+"\n");
+            System.out.println("Data: "+ at.dataString() + " | Atividade: "+at.getNome()+"\n");
         }                               
         System.out.println("_______________________________________________________\n");
         
@@ -858,7 +858,7 @@ public class GeoCachingPOO implements Serializable
                 Atividade x;
                 for(i = 0; i < ats.size(); i++){
                     x = ats.get(i);
-                    if(x.getCodCache().equals(cod)){
+                    if(x.getNome().equals(cod)){
                         System.out.println(x.toString());
                     }
                     else if (i == ats.size()-1){
@@ -880,8 +880,8 @@ public class GeoCachingPOO implements Serializable
         if( rede.cacheExiste(cod)){
             System.out.println("Qual o motivo do report? ");
             motivo = input.lerString();
-                rede.insereReport(user.getEmail(), motivo, cod);
-                System.out.println("Report inserido!\n");
+            rede.insereReport(user.getEmail(), motivo, cod);            
+            System.out.println("Report inserido!\n");
         }
         else {
             System.out.println("Código não existe. Por favor consulte lista de caches existentes\n");
@@ -967,7 +967,7 @@ public class GeoCachingPOO implements Serializable
                          }
                 default : System.out.println("Opção inválida! Prima ENTER para continuar...."); input.lerString();
             }
-            
+            System.out.println("Coordenada Inválida! Prima ENTER para voltar a tentar....\n"); input.lerString();
         }
         
         rede.setReports(rep); //para guardar a lista de reports anterior pela nova lista atualizada

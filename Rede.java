@@ -22,12 +22,15 @@ public class Rede implements Serializable
     public Rede(){
         this.users = new HashMap<String,Utilizador>();
         this.caches = new HashMap<String,Cache>();
+        this.reports = new ArrayList<Report>();
         this.admin = new Utilizador("admin@geocachingpoo.pt","admin","admin","","",1990,0,1);
+        this.users.put(admin.getEmail(), admin);
     }
     
     public Utilizador getAdmin()        { return this.admin; }
     public HashMap<String,Cache> getCaches() { return this.caches; }
-    public HashMap<String,Utilizador> getUtilizadores() { return this.users; }
+    public HashMap<String,Utilizador> getUtilizadores() { return this.users; }    
+    public ArrayList<Report> getReports(){ return this.reports; }
     
     public Utilizador getUtilizador(String email){
         return users.get(email);
@@ -213,13 +216,10 @@ public class Rede implements Serializable
         }
     }
     
-    public void insereReport(String email, String cod, String motivo)   {
-        Report rep = new Report(email, motivo, cod);
-        this.reports.add(rep);     
-        
+    public void insereReport(String email, String motivo, String cod)   {
+        Report rep = new Report(email, motivo, cod);    
+        this.reports.add(rep);
     }
-    
-    public ArrayList<Report> getReports(){ return this.reports; }
     
     public void setReports(ArrayList<Report> rep) { this.reports = new ArrayList<>(rep); }
     

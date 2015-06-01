@@ -312,6 +312,9 @@ public class Utilizador implements Serializable
         s.append("\n_____________________________________");
         return s.toString();
     }
+    
+   // public ArrayList<
+    
 
     private boolean comparaData(GregorianCalendar d1, GregorianCalendar d2){ //verifica se d1 é mais recente que d2
         boolean res = false;

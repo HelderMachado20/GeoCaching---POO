@@ -30,8 +30,7 @@ public class MicroCache extends Cache implements Serializable
             
             s.append("Código: "+getCodigo()+"\n");
             s.append("Criador: "+getCriador()+"\n");
-            s.append("Data: "+d.get(Calendar.YEAR)+"/"+(d.get(Calendar.MONTH)+1)+"/"+d.get(Calendar.DAY_OF_MONTH)+"\n");            
-            s.append("Criador: "+getCriador()+"\n");
+            s.append("Data: "+d.get(Calendar.YEAR)+"/"+(d.get(Calendar.MONTH)+1)+"/"+d.get(Calendar.DAY_OF_MONTH)+"\n");     
             s.append("Descrição: "+getDescricao()+"\n");    
             s.append("Coordenadas: "+getCoordenadas().toString()+"\n");
             
