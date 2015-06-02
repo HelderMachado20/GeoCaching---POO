@@ -216,6 +216,18 @@ public class Rede implements Serializable
         }
     }
     
+     public void removeAtividade(String email, String cod) throws Excepcoes{    
+        
+        Utilizador ut = users.get(email);
+        
+        try{
+            ut.removeAtiv(cod); 
+        }
+        catch(Excepcoes e){
+            throw e;
+        }
+    }
+    
     public void insereReport(String email, String motivo, String cod)   {
         Report rep = new Report(email, motivo, cod);    
         this.reports.add(rep);
@@ -240,10 +252,21 @@ public class Rede implements Serializable
         return ut.ordenaAtividades();
     }
     
-    public ArrayList<ArrayList<Atividade>> getStatsMensais(String email) throws Excepcoes{
+    public ArrayList<ArrayList<Atividade>> getStatsMensais(String email, int year) throws Excepcoes{
         ArrayList<ArrayList<Atividade>> at;
         try{
-             at = users.get(email).statsMensais();
+             at = users.get(email).statsMensais(year);
+        }
+        catch(Excepcoes e){
+            throw e;
+        }        
+        return at;
+    }
+    
+     public HashMap<Integer,ArrayList<Atividade>> getStatsAnuais(String email) throws Excepcoes{
+        HashMap<Integer,ArrayList<Atividade>> at;
+        try{
+             at = users.get(email).statsAnuais();
         }
         catch(Excepcoes e){
             throw e;
@@ -251,8 +274,6 @@ public class Rede implements Serializable
         
         return at;
     }
-    
-    
     
     
     

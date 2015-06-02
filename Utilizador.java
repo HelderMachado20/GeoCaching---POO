@@ -287,7 +287,7 @@ public class Utilizador implements Serializable
     }
     
     
-    public ArrayList<ArrayList<Atividade>> statsMensais() throws Excepcoes{
+    public ArrayList<ArrayList<Atividade>> statsMensais(int year) throws Excepcoes{
         if (atividades.size()==0) { throw new Excepcoes("Não tem nenhuma atividade registada"); }
         else {
             ArrayList<ArrayList<Atividade>> stats = new ArrayList<>(12);
@@ -298,17 +298,45 @@ public class Utilizador implements Serializable
             
             int ano, ano_atual, mes;
             Atividade at;
-            
-            ano_atual = Calendar.getInstance().get(Calendar.YEAR);
+           
             for(String cod : atividades.keySet()){
                 at = atividades.get(cod).clone();
                 ano = at.getAno();
                 mes = at.getMes();
-                if(ano == ano_atual){ stats.get(mes).add(at); }
+                if(ano == year){ stats.get(mes).add(at); }
             }
         
             return stats;
         }
+    }
+    
+     public HashMap<Integer,ArrayList<Atividade>> statsAnuais() throws Excepcoes{
+         
+        if (atividades.size()==0) { throw new Excepcoes("Não tem nenhuma atividade registada"); }
+        else {
+            HashMap<Integer,ArrayList<Atividade>> stats = new HashMap<>();
+            
+            int ano, ano_atual, mes;
+            Atividade at;
+            
+                        
+            for(String cod : atividades.keySet()){
+                at = atividades.get(cod).clone();
+                ano = at.getAno();
+                mes = at.getMes();
+                
+                if( stats.get(ano) != null ){
+                    stats.get(ano).add(at);
+                }
+                else {  
+                    ArrayList<Atividade> a = new ArrayList<>();
+                    stats.put(ano,a);
+                    stats.get(ano).add(at);
+                }            
+            }
+            return stats;
+        }
+        
     }
     
     public String toString(){
