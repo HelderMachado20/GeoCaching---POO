@@ -291,13 +291,17 @@ public class Utilizador implements Serializable
         if (atividades.size()==0) { throw new Excepcoes("Não tem nenhuma atividade registada"); }
         else {
             ArrayList<ArrayList<Atividade>> stats = new ArrayList<>(12);
-            int tam = atividades.size(), ano, ano_atual, mes;
-            String cod;
+            for(int i = 0 ; i<12 ; i++){                
+                ArrayList<Atividade> l = new ArrayList<>();
+                stats.add(l);
+            }
+            
+            int ano, ano_atual, mes;
             Atividade at;
             
             ano_atual = Calendar.getInstance().get(Calendar.YEAR);
-            for(int i = 0 ; i < tam ; i++){
-                at = atividades.get(i).clone();
+            for(String cod : atividades.keySet()){
+                at = atividades.get(cod).clone();
                 ano = at.getAno();
                 mes = at.getMes();
                 if(ano == ano_atual){ stats.get(mes).add(at); }

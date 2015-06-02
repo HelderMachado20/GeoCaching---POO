@@ -182,7 +182,7 @@ public class GeoCachingPOO implements Serializable
         int op;
         while(!sair){
             title();
-            System.out.println("\n1 - Lista de utilizadores\n2 - Amigos\n3 - Caches\n7 - Editar dados pessoais\n8 - Gravar \n9 - Logout");
+            System.out.println("\n1 - Lista de utilizadores\n2 - Amigos\n3 - Caches & Atividades\n7 - Editar dados pessoais\n8 - Gravar \n9 - Logout");
             op = input.lerInt();
             switch(op){
                 case 1 : { System.out.println(rede.getListaUsers()+"\nPrima ENTER para continuar..."); input.lerString(); break;}
@@ -477,7 +477,7 @@ public class GeoCachingPOO implements Serializable
                         }
                 case 5: { System.out.println("Insira nova morada: "); String s = input.lerString(); user.setMorada(s); }
                 case 6: {  System.out.println("Insira nova data\nAno: "); int ano = input.lerInt();
-                           System.out.println("Mes: "); int mes = input.lerInt();
+                           System.out.println("Mes: "); int mes = input.lerInt(); mes--;
                            System.out.println("Dia: "); int dia = input.lerInt();
                            if(validaData(ano,mes,dia)) { user.setDataNasc(ano,mes,dia); }
                            else {  System.out.println("Data inválida!"); input.lerString(); }
@@ -504,8 +504,8 @@ public class GeoCachingPOO implements Serializable
         while(op!=0){
             title();
             System.out.println("1  - Criar cache\n2  - Remover Cache\n3  - Consultar caches\n4  - Registar nova atividade\n5  - Últimas 10 atividades\n"+
-                               "6  - Últimas 10 atividades de um amigo\n7  - Consultar todas as atividades\n8  - Consultar todas as atividades de um amigo\n"+
-                               "9  - Remover atividade\n10  - Estatísticas Mensais\n11 - Estatísticas Anuais\n12 - Report Abuse\n13 - Consultar Reports(Admin)\n0 - Sair\n");
+                               "6  - Consultar todas as atividades\n7  - Remover atividade\n8  - Estatísticas Mensais\n9 - Estatísticas Anuais\n"+
+                               "10 - Report Abuse\n11 - Consultar Reports(Admin)\n0 - Sair\n");
             op = input.lerInt();
             switch(op){
                 case 0 : { break; }
@@ -513,18 +513,17 @@ public class GeoCachingPOO implements Serializable
                 case 2 : { removerCache(); break; }
                 case 3 : { consultaCaches(); break; }
                 case 4 : { registaAtividade(); break; }
-                case 5 : { ultimasDez(user.getEmail()); break; }
-                case 6 : { atividadesAmigo(6); break; }
-                case 7 : { consultaAtividades(user.getEmail()); break; }
-                case 8 : { atividadesAmigo(8); break; }
-                case 9 : { removeAtividade(); break; }    
-                case 10: { statsMensais(user.getEmail()); break; }
-                case 12: { fazerReport(); break; }
-                case 13: { menuReports(); break;}
+                case 5 : { infoQuem(5); break; }
+                case 6 : { infoQuem(6); break; }
+                case 7 : { removeAtividade(); break; }    
+                case 8 : { infoQuem(8); break; }
+                case 9 : { infoQuem(9); break; }
+                case 10: { fazerReport(); break; }
+                case 11: { menuReports(); break;}
                 default: { System.out.println("Opção inválida!\n");}                 
             }
-            System.out.println("Prima ENTER para continuar...."); input.lerString();
         }
+        System.out.println("Prima ENTER para continuar...."); input.lerString();
     }
     
     /**
@@ -694,6 +693,7 @@ public class GeoCachingPOO implements Serializable
         System.out.println("Insria nome/código para esta atividade:");
         nome = input.lerString();
         
+        
         System.out.println("Qual o tipo de cache?\n1 - MicroCache\n2 - MisteryCache\n3 - MultiCache\n4 - Virtual Cache\n");
         opCache = input.lerInt();
         while(opCache<1 || opCache>4){
@@ -706,7 +706,8 @@ public class GeoCachingPOO implements Serializable
         
         while(!rede.cacheExiste(cod)){
             System.out.println("Código inválido");
-            return;     
+            System.out.println("Insira novo código:");
+            cod = input.lerString();  
         }        
 
         ca = rede.getCache(cod);
@@ -747,9 +748,9 @@ public class GeoCachingPOO implements Serializable
                            +" 2 - "+Meteo.CH.toString()+"\n"
                            +" 3 - "+Meteo.CHFT.toString()+"\n"
                            +" 4 - "+Meteo.SOL.toString()+"\n"
-                           +" 4 - "+Meteo.NEV.toString()+"\n"
-                           +" 5 - "+Meteo.TEMP.toString()+"\n"
-                           +" 6 - "+Meteo.NUB.toString()+"\n");
+                           +" 5 - "+Meteo.NEV.toString()+"\n"
+                           +" 6 - "+Meteo.TEMP.toString()+"\n"
+                           +" 7 - "+Meteo.NUB.toString()+"\n");
         
         op = input.lerInt();
         
@@ -805,8 +806,34 @@ public class GeoCachingPOO implements Serializable
             System.out.println(cc.get(cod).toString());
             System.out.println("---------\n");
         }                           
-        System.out.println("_______________________________________________________\n");
+        System.out.println("_______________________________________________________\n");        
+        System.out.println("Prima ENTER para continuar..."); input.lerString();
     }
+    
+    
+    public static void infoQuem(int op){
+        int quem = -1;
+        
+        System.out.println("1 - Pessoais\n2 - De um amigo\n0 - Sair");
+        quem = input.lerInt();
+        
+        while(quem!=0 ){
+            switch(quem){
+                case 1:  { 
+                          switch (op){
+                              case 5 : { ultimasDez(user.getEmail()); break; }
+                              case 6 : { consultaAtividades(user.getEmail()); break; }
+                              case 8 : { statsMensais(user.getEmail()); break; }
+                              case 9 : { statsAnuais(user.getEmail()); break; }
+                              default : { System.out.println("Erro!"); }
+                          }
+                        }
+                case 2: {  atividadesAmigo(op); break; }
+                default:{  System.out.println("Opção inválida"); input.lerString(); }
+                }
+        }
+    }
+    
     
     public static void atividadesAmigo(int op){
         String email;
@@ -818,14 +845,13 @@ public class GeoCachingPOO implements Serializable
         try{
             ut = rede.getUser(email);
             if( rede.existeAmigo(email, user.getEmail() )   ){
-                if(op==6) {
-                    ultimasDez(email);
-                } else if(op==8) {
-                            consultaAtividades(email);
-                        } else {
-                                System.out.println("Erro desconhecido");
-                              }
-               
+                switch(op){
+                    case 5: { ultimasDez(email);} 
+                    case 6: { consultaAtividades(email); }
+                    case 8:{ statsMensais(email);}
+                    case 9:{ statsAnuais(email); }
+                    default:{ System.out.println("Erro!");}
+                }
             }
             else {
                 System.out.println("Este utilizador não é seu amigo. Não pode efetuar esta consultar!");
@@ -835,21 +861,26 @@ public class GeoCachingPOO implements Serializable
         catch(Excepcoes e){
            System.out.println(e); 
         }
+        
+        System.out.println("Prima ENTER para continuar..."); input.lerString();
     }
     
     public static void ultimasDez(String email){
         int op = -1;
-        ArrayList<Atividade> ats = new ArrayList<>(rede.getDezAtividades(email));        
-        System.out.println("        *** 10 ATIVIDADES MAIS RECENTES ***            \n");
-        System.out.println("_______________________________________________________\n");
-        for(Atividade at : ats){
-            System.out.println("Data: "+ at.dataString() + " | Atividade: "+at.getNome()+"\n");
-        }                               
-        System.out.println("_______________________________________________________\n");
         
         while(op!=0){
-            System.out.println("1 - Ver uma destas caches em detalhe\n0 - Sair");
+            title();
+            ArrayList<Atividade> ats = new ArrayList<>(rede.getDezAtividades(email));        
+            System.out.println("        *** 10 ATIVIDADES MAIS RECENTES ***            \n");
+            System.out.println("_______________________________________________________\n");
+            for(Atividade at : ats){
+                System.out.println("Data: "+ at.dataString() + " | Atividade: "+at.getNome()+"\n");
+            }                               
+            System.out.println("_______________________________________________________\n");
+        
+            System.out.println("1 - Ver uma destas atividades em detalhe\n0 - Sair");
             op = input.lerInt();
+            
             if(op == 1){
                 int i = 0;
                 System.out.println("Insira código: ");
@@ -866,8 +897,10 @@ public class GeoCachingPOO implements Serializable
                         System.out.println("Código não existe nas últimas 10 atividades");
                     }
                 }   
+                System.out.println("Prima ENTER para continuar..."); input.lerString();
             }
-            else if(op!=0 && op !=1) { System.out.println("Opção inválida"); }
+            else if(op!=0 && op !=1) { System.out.println("Opção inválida");      
+                                       System.out.println("Prima ENTER para continuar..."); input.lerString(); }       
         }
         
     }
@@ -985,20 +1018,23 @@ public class GeoCachingPOO implements Serializable
             return;
         }
         
-        System.out.println("Cache removida com sucesso!");
-    }
+        System.out.println("Cache removida com sucesso!");        
+        System.out.println("Prima ENTER para continuar..."); input.lerString();
+    }  
     
     public static void consultaAtividades(String email){
         int op = -1;
         ArrayList<Atividade> ats = new ArrayList<>(rede.getAtividades(email));
-        System.out.println("           *** TODAS AS ATIVIDADES ***                 \n");
-        System.out.println("_______________________________________________________\n");
-        for(Atividade at : ats){
-            System.out.println("Data: "+ at.dataString() + " | Atividade: "+at.getNome()+"\n");
-        }                               
-        System.out.println("_______________________________________________________\n");
-        
         while(op!=0){
+            title();
+            System.out.println("           *** TODAS AS ATIVIDADES ***                 \n");
+            System.out.println("_______________________________________________________\n");
+            for(Atividade at : ats){
+                System.out.println("Data: "+ at.dataString() + " | Atividade: "+at.getNome()+"\n");
+            }                               
+            System.out.println("_______________________________________________________\n");
+        
+        
             System.out.println("1 - Ver uma destas caches em detalhe\n0 - Sair");
             op = input.lerInt();
             if(op == 1){
@@ -1027,13 +1063,15 @@ public class GeoCachingPOO implements Serializable
     }
     
     public static void statsMensais(String email){
-        ArrayList<ArrayList<Atividade>> stats = null;
+        ArrayList<ArrayList<Atividade>> stats = null; 
         int op = -1;
+              
         
         try{
            stats = rede.getStatsMensais(email);
         } catch(Excepcoes e){
             System.out.println(e);
+            return;
         }
         
         System.out.println("________________________________________\n");
@@ -1043,50 +1081,57 @@ public class GeoCachingPOO implements Serializable
         System.out.println("________________________________________\n");
           
         while(op!= 0 && op != 1){
-            System.out.println("1 - Consultar mês\n0 - Sair\n");
+            System.out.println("1 - Consultar mês\n0 - Sair");
             op = input.lerInt();
             if(op==1){
-                System.out.println("Qual o mês a consultar (1..12)? (Prima 0 para sair)\n");
-                int mes = input.lerInt();
-                if(mes < 1 && op > mes) { System.out.println("Mês inválido\n"); }
+                System.out.println("\nQual o mês a consultar (1..12)? (Prima 0 para sair)");
+                int mes = input.lerInt(); mes--;
+                if(mes < 0 && 11 > mes) { System.out.println("Mês inválido!\n"); }
                 else if( stats.get(mes).size() == 0) { System.out.println("Não existem atividades neste mês\n"); }
                      else {
-                         mes--;
                          consultaStatsMes(stats.get(mes));
                         }
-                }
-            else if (op!=0){
-                System.out.println("Opção inválida\n");
             }
+            else if (op != 0 ) { System.out.println("Opção inválida\n"); }
+            
+            System.out.println("Prima ENTER para continuar..."); input.lerString();
         }
         
     }
     
-    public static void consultaStatsMes(ArrayList<Atividade> listames){
-        
-        for(Atividade at : listames){
-            System.out.print("Data: "+at.dataString()+" | Código/Nome: "+at.getNome()+"\n");
-        }
+    public static void consultaStatsMes(ArrayList<Atividade> listames){       
         int op = -1;
+        while(op!=0){            
+            title(); 
+            System.out.println(" *** Atividades do mês escolhido *** \n");       
         
-        while(op!=0){
-            System.out.println("1 - Consultar detalhes de uma atividade\n0 - Sair\n");
+            for(Atividade at : listames){
+                System.out.print("- Data: "+at.dataString()+" | Código/Nome da atividade: "+at.getNome()+"\n");
+            }
+            System.out.println("\n\n");
+        
+            System.out.println("1 - Consultar detalhes da atividade\n0 - Sair\n");
+            op = input.lerInt();
             if(op==1){
-                System.out.println("Insira código da cache: "); int cod = input.lerInt();
-                int flag = 0;
+                System.out.println("Insira código da atividade: "); String cod = input.lerString();
+                System.out.println("\n *** Detalhes de uma atividade ***\n");
                 for(Atividade at : listames){
                     if(at.getNome().equals(cod)){
                         System.out.println("----------------------------------\n");
                         System.out.println(at.toString());
                         System.out.println("----------------------------------\n");
-                        flag = 1; break;
                     }
-                }
-                if(flag == 0) { System.out.println("Atividade não existe neste mês\n"); }
+                }                
+                System.out.println("Prima ENTER para continuar...."); input.lerString();
             }
-            else if (op != 0) { System.out.println("Opção inválida\n"); }
+            else if (op != 0) { System.out.println("Opção inválida\n"); 
+                                System.out.println("Prima ENTER para continuar...."); input.lerString(); }
         }
                 
+    }
+    
+    public static void statsAnuais(String email){
+        
     }
     
     /********************************************************************************************************************************************************************
@@ -1102,22 +1147,23 @@ public class GeoCachingPOO implements Serializable
         boolean res=true;
         
         if(ano<1900 || ano>Calendar.getInstance().get(Calendar.YEAR)){ res = false; }
+        if(ano==Calendar.getInstance().get(Calendar.YEAR) && mes>Calendar.getInstance().get(Calendar.MONTH)) { res = false; }
         
         if(mes<0 || mes>11) { res = false; }
         
         switch(mes){
-            case 1  :
-            case 3  :
-            case 5  :
-            case 7  :
-            case 8  :
-            case 10 :
-            case 12 : { if (dia<0 || dia>31) { res = false; }  break; }
+            case 0  :
+            case 2  :
             case 4  :
             case 6  :
-            case 9  :
-            case 11 : { if (dia<0 || dia>30) { res = false; }  break; }
-            case 2  : { if (dia<0 || dia>(28+(ano%400))) { res = false; } break; }
+            case 7  :
+            case 9 :
+            case 11 : { if (dia<0 || dia>31) { res = false; }  break; }
+            case 3  :
+            case 5  :
+            case 8  :
+            case 10 : { if (dia<0 || dia>30) { res = false; }  break; }
+            case 1  : { if (dia<0 || dia>(28+(ano%400))) { res = false; } break; }
             default : return false;
         }
         

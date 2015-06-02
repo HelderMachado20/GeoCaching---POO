@@ -17,8 +17,8 @@ public class Eventos implements Serializable
     private String nome;         //Nome do evento
     private int maxp;            //Máximo de participantes
     private ArrayList<Cache> caches;
-    private HashMap<Utilizador,Integer> participantes;      //HashMap com os participantes e tempo médio (em minutos) inferido segundo o seu historial
+    private HashMap<String,Integer> participantes;      //id do participante e pontuação 
     private GregorianCalendar prazo_insc;
     private GregorianCalendar data;
-    private Simulacao resultados;
+    private String vencedor;        //id do vencedor do evento
 }
