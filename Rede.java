@@ -77,11 +77,10 @@ public class Rede implements Serializable
         }
     }
     
-    public boolean validaMail(String email){
-        if(!users.containsKey(email)){
-            return true;
-        }
-        return false;
+    public boolean validaMail(String email) throws Excepcoes{
+        if(email.equals("")) {throw new Excepcoes ("Email não pode ser vazio!\n"); }
+        if(users.containsKey(email)){ throw new Excepcoes ("Email já registado!\n"); }
+        return true;
     }
     
     public boolean emailExiste(String mail){
@@ -334,8 +333,54 @@ public class Rede implements Serializable
        
     }
     
-    
-    
+    public HashMap<Integer,ArrayList<String>> cachesAnuais(){
+            HashMap<Integer,ArrayList<String>> stats = new HashMap<>();
+            
+            int ano, mes;
+            Cache cc;
+            
+                        
+            for(String cod : caches.keySet()){
+                cc = caches.get(cod);
+                ano = cc.getAno();
+                mes = cc.getMes();
+                
+                if( stats.get(ano) != null ){
+                    stats.get(ano).add(cod);
+                }
+                else {  
+                    ArrayList<String> a = new ArrayList<>();
+                    stats.put(ano,a);
+                    stats.get(ano).add(cod);
+                }            
+            }
+            return stats;
+    }
+        
+    public HashMap<Integer,ArrayList<String>> registosAnuais(){        
+            HashMap<Integer,ArrayList<String>> stats = new HashMap<>();
+            
+            int ano, mes;
+            Utilizador ut;
+            GregorianCalendar dr;
+           
+            for(String email : users.keySet()){
+                ut = users.get(email);
+                dr = ut.getDataReg();
+                ano = dr.get(Calendar.YEAR);
+                
+                if( stats.get(ano) != null ){
+                    stats.get(ano).add(email);
+                }
+                else {  
+                    ArrayList<String> a = new ArrayList<>();
+                    stats.put(ano,a);
+                    stats.get(ano).add(email);
+                }            
+            }
+        
+            return stats;       
+    }
     
     
     

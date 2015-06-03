@@ -303,6 +303,7 @@ public class Utilizador implements Serializable
                 stats.add(l);
             }
             
+            boolean atLeastOne = false;
             int ano, mes;
             Atividade at;
            
@@ -310,9 +311,11 @@ public class Utilizador implements Serializable
                 at = atividades.get(cod).clone();
                 ano = at.getAno();
                 mes = at.getMes();
-                if(ano == year){ stats.get(mes).add(at); }
+                if(ano == year){ stats.get(mes).add(at); atLeastOne = true; }
             }
-        
+            
+            if(atLeastOne==false) { throw new Excepcoes("Não tem atividades neste ano\n"); }
+            
             return stats;
         }
     }

@@ -172,8 +172,9 @@ public class GeoCachingPOO implements Serializable
         int op;
         while(!sair){
             title();
+            System.out.println("  ***           MENU PRINCIPAL              ***  \n");
             System.out.println("\n1 - Lista de utilizadores\n2 - Amigos\n3 - Caches & Atividades\n4 - Consultar dados pessoais\n"+
-                               "5 - Editar dados pessoais\n6 - Estatísticas Mensais GeoCachingPOO\n7 - Estatísticas Anuais GeoCachingPOO(Ainda por implementar)\n"+
+                               "5 - Editar dados pessoais\n6 - Estatísticas Mensais GeoCachingPOO\n7 - Estatísticas Anuais GeoCachingPOO\n"+
                                "8 - Gravar \n9 - Logout");
             op = input.lerInt();
             switch(op){
@@ -185,7 +186,8 @@ public class GeoCachingPOO implements Serializable
                            break;
                          }
                 case 5 : { menuEditarDados(); break; }
-                case 6 : { statsMensaisApp(); break; }
+                case 6 : { System.out.println("Qual o ano a consultar?"); int ano = input.lerInt(); statsMensaisApp(ano); break; }
+                case 7 : { statsAnuaisApp(); break; }
                 case 8 : { saveFile(); break;  }
                 case 9 : {   
                             int grava=0;
@@ -205,10 +207,7 @@ public class GeoCachingPOO implements Serializable
         menuLogin(); 
     }
     
-    public static void statsMensaisApp(){
-        System.out.println("Qual o ano a consultar?");
-        int ano = input.lerInt();
-        String ncaches = "";
+    public static void statsMensaisApp(int ano){
         ArrayList<ArrayList<String>> cs = new ArrayList<>();
         ArrayList<ArrayList<String>> uu = new ArrayList<>();
         uu = rede.registosMensais(ano);
@@ -219,7 +218,7 @@ public class GeoCachingPOO implements Serializable
         while(op!=0){
             
             title();
-            System.out.println("\n\n");
+            System.out.println("\n** Estatísticas do ano "+ano+" **\n");
             for(int i = 0 ; i < 12 ; i++){
                 System.out.println("Mês "+(i+1)+" -> Utilizadores registados: "+uu.get(i).size()+" | Caches criadas: "+cs.get(i).size());
             }
@@ -231,26 +230,95 @@ public class GeoCachingPOO implements Serializable
             {
                 case 0 : { break; }
                 case 1 : { System.out.println("Qual o mês a consultar?"); int mes = input.lerInt(); mes--;
-                           if(mes<0 || mes>11) { System.out.println("Mês inválido"); break; }
-                           else { System.out.println("____________________________\n");
-                                  for(String s : uu.get(mes)) { System.out.println(s); }
-                                  System.out.println("____________________________");                                  
-                                  System.out.println("Prima ENTER para continuar..."); input.lerString(); }
+                           if(mes<0 || mes>11) { System.out.println("Mês inválido"); }
+                           else { if(uu.get(mes).size()==0) { System.out.println("Não há registos a apresentar nesse mês\n"); }
+                                  else {
+                                        System.out.println("____________________________\n");
+                                        for(String s : uu.get(mes)) { System.out.println(s); }
+                                        System.out.println("____________________________");                          
+                                  }
+                           }
+                           System.out.println("Prima ENTER para continuar..."); input.lerString();
                            break;
-                         }
+                          }
                 case 2 : { System.out.println("Qual o mês a consultar?"); int mes = input.lerInt(); mes--;
                            if(mes<0 || mes>11) { System.out.println("Mês inválido"); break; }
-                           else { System.out.println("____________________________\n");   
-                                  for(String s : cs.get(mes)) { System.out.println(s); } 
-                                  System.out.println("____________________________");   
-                                  System.out.println("Prima ENTER para continuar..."); input.lerString(); }
-                            break;
+                           else { if(cs.get(mes).size()==0) { System.out.println("Não há criações de caches a apresentar nesse mês\n"); }
+                                  else {
+                                        System.out.println("____________________________\n");   
+                                        for(String s : cs.get(mes)) { System.out.println(s); } 
+                                        System.out.println("____________________________");   
+                                  }
+                           }
+                           System.out.println("Prima ENTER para continuar..."); input.lerString();
+                           break;
                          }
                 default: { System.out.println("Opção inválida! Prima ENTER para continuar..."); input.lerString(); break; }
             }
         }
         
     }
+    
+    
+    public static void statsAnuaisApp(){
+        HashMap<Integer,ArrayList<String>> cc = new HashMap<>();
+        HashMap<Integer,ArrayList<String>> uu = new HashMap<>();
+        cc = rede.cachesAnuais();
+        uu = rede.registosAnuais();
+        
+        int op=-1;
+        
+        while(op!=0){
+            
+            title();
+            System.out.println("*** Registo de utilizadores ***\n");
+            
+            for(int ano : uu.keySet()){
+                System.out.println("Ano "+ano+" -> Utilizadores registados: "+uu.get(ano).size());
+            }
+            
+            System.out.println("\n___________________________________\n\n*** Criação de caches ***\n");
+            
+            for(int ano : cc.keySet()){
+                System.out.println("Ano "+ano+" -> Caches criadas: "+uu.get(ano).size());
+            }
+            System.out.println("\n\n");
+        
+            System.out.println("1 - Consultar emails registados num dado ano\n2 - Consultar códigos de caches criadas num dado ano\n3 - Consultar Estaísticas mensais de um ano0 - Sair");
+            op = input.lerInt();
+            switch(op)
+            {
+                case 0 : { break; }
+                case 1 : { System.out.println("Qual o ano a consultar?"); int ano = input.lerInt();
+                           if(uu.get(ano)==null) { System.out.println("Não há registos a apresentar nesse ano!");}
+                           else { System.out.println("____________________________\n");
+                                  for(String s : uu.get(ano)) { System.out.println(s); }
+                                  System.out.println("____________________________"); 
+                                  }
+                           System.out.println("Prima ENTER para continuar..."); input.lerString();
+                           break;
+                         }
+                case 2 : { System.out.println("Qual o ano a consultar?"); int ano = input.lerInt();
+                           if(cc.get(ano)==null) { System.out.println("Não há caches criadas nesse ano!"); }
+                           else { System.out.println("____________________________\n");   
+                                  for(String s : cc.get(ano)) { System.out.println(s); } 
+                                  System.out.println("____________________________");  
+                                }
+                           System.out.println("Prima ENTER para continuar..."); input.lerString(); 
+                            break;
+                         }
+                case 3 : { System.out.println("Qual o ano a consultar?"); int ano = input.lerInt();
+                           if(uu.get(ano)==null) { System.out.println("Não há registos a apresentar nesse ano!"); 
+                                                   System.out.println("Prima ENTER para continuar..."); input.lerString(); }
+                           else{ statsMensaisApp(ano); }
+                           break;
+                         }
+                default: { System.out.println("Opção inválida! Prima ENTER para continuar..."); input.lerString(); break; }
+            }
+        }
+    }
+    
+    
     /********************************************************************************************************************************************************************
      ******************************************************* MENU E FUNÇÕES RESPECTIVAS A AMIZADES ********************************************************************** 
      ********************************************************************************************************************************************************************
@@ -264,6 +332,7 @@ public class GeoCachingPOO implements Serializable
         int op=-1;
         while(op!=0){
             title();
+            System.out.println("  ***            AMIZADES           ***  \n");
             System.out.println("1 - Lista de amigos\n2 - Lista de pedidos\n3 - Aceitar pedido\n4 - Remover pedido \n5 - Enviar pedido\n6 - Remover amigo\n"+
                                "7 - Consultar dados pessoais de uma amigo\n0 - Sair\n");
             op = input.lerInt();
@@ -441,13 +510,17 @@ public class GeoCachingPOO implements Serializable
      * FUNÇÃO PARA CRIAR NOVA CONTA DE UTILIZADOR
      */
     public static void criaConta(){
-        String email, password, nome, genero="", morada="";
+        String email = "", password, nome, genero="", morada="";
         int dia=0, mes=0, ano=0, gen=0, flagAno=0, param=0;
-        
-        System.out.println("Insira email: "); email = input.lerString();
-        while(rede.validaMail(email) == false){
-            System.out.println("Este email já foi registado! Insira outro por favor: "); 
-            email = input.lerString();
+        boolean validado = false;
+        while(validado == false){
+            try{                
+                System.out.println("Insira email: ");
+                email = input.lerString();
+                validado = rede.validaMail(email);
+            } catch (Excepcoes e){
+                System.out.println(e); 
+            }
         }
         
         System.out.println("Insira password: "); password = input.lerString();
@@ -493,6 +566,8 @@ public class GeoCachingPOO implements Serializable
         
         while(op!=0){
             title();
+            
+            System.out.println("  ***        EDIÇÃO DADOS PESSOAIS            ***  \n");
             System.out.println("1 - Editar email \n2 - Editar nome\n3 - Editar password\n4 - Editar género\n5 - Editar morada\n6 - Editar data de Nascimento\n0 - Sair");
             op = input.lerInt();
             switch(op){
@@ -543,9 +618,10 @@ public class GeoCachingPOO implements Serializable
         int op = -1;        
         while(op!=0){
             title();
+            System.out.println("  ***          CACHES & ATIVIDADES           ***  \n");
             System.out.println("1  - Criar cache\n2  - Remover Cache\n3  - Consultar caches\n4  - Registar nova atividade\n5  - Últimas 10 atividades\n"+
-                               "6  - Consultar todas as atividades\n7  - Remover atividade\n8  - Estatísticas Mensais\n9 - Estatísticas Anuais\n"+
-                               "10 - Report Abuse\n11 - Consultar Reports(Admin)\n0 - Sair\n");
+                               "6  - Consultar todas as atividades\n7  - Remover atividade\n8  - Estatísticas Mensais\n9  - Estatísticas Anuais\n"+
+                               "10 - Report Abuse\n11 - Consultar Reports(Admin)\n0  - Sair\n");
             op = input.lerInt();
             switch(op){
                 case 0 : { break; }
@@ -607,19 +683,6 @@ public class GeoCachingPOO implements Serializable
             }
         }
         
-        /*while(flagAno!=1){
-            System.out.println("Data de criação:\nANO: ");
-            ano = input.lerInt();
-            System.out.println("MES: ");
-            mes = input.lerInt(); mes--; //meses vão de 0 a 11
-            System.out.println("Dia: ");
-            dia = input.lerInt();
-            if(validaData(ano,mes,dia)) { 
-                data = new GregorianCalendar(ano, mes, dia);
-                flagAno = 1; }
-            else { System.out.println("Data inválida"); }
-        }*/
-        
         System.out.println("Insira decrição da cache:" );
         String descricao = input.lerString();
         
@@ -647,7 +710,7 @@ public class GeoCachingPOO implements Serializable
     public static void dadosMisteryCache(String cod, GregorianCalendar data, String descricao, Coordenadas cor, String criador) {
         System.out.println("Qual o objecto que se encontrará na cache?: ");
         String obj = input.lerString();
-        System.out.println("Qual o tipo de charada? (por ex: Adivinha, Puzze, Quebra-cabeças...) ");
+        System.out.println("Qual o tipo de charada? (por ex: \"Equação para desvendar grau da latitude\" ) ");
         String tipo = input.lerString();        
         System.out.println("Charada a resolver: ");
         String charada = input.lerString();        
@@ -699,7 +762,7 @@ public class GeoCachingPOO implements Serializable
             int s1 = input.lerInt();
             System.out.print("direção: ");
             char d1 = Character.toUpperCase(input.lerChar());
-            if(cor.validaLat(g1,m1,s1,d1)){ lat = new Coord(g1,s1,m1,d1);
+            if(cor.validaLat(g1,m1,s1,d1)){ lat = new Coord(g1,m1,s1,d1);
                                             cor.setLat(lat); 
                                             flagC = 1; }
             else { System.out.println("Coordenada Inválida! Prima ENTER para voltar a tentar....\n"); input.lerString(); }
@@ -999,7 +1062,8 @@ public class GeoCachingPOO implements Serializable
          ArrayList<Report> rep = new ArrayList<>(rede.getReports());
         
         while(op!=0){
-            title();
+            title();            
+            System.out.println("  ***          REPORTS            ***  \n");
             System.out.println("1 - Consultar reports\n2 - Remover report\n3 - Remover uma cache reportada\n 0- Sair");
             op = input.lerInt();            
             switch(op){
@@ -1110,11 +1174,12 @@ public class GeoCachingPOO implements Serializable
             rede.removeAtividade(user.getEmail(),cod);
         } catch(Excepcoes e) {
             System.out.println(e);
+            System.out.println("Prima ENTER para continuar...."); input.lerString();
             return;
         }
         
         System.out.println("Atividade removida com sucesso!");
-
+        System.out.println("Prima ENTER para continuar...."); input.lerString();
     }
     
     public static void statsMensais(String email, int yy){
@@ -1132,6 +1197,7 @@ public class GeoCachingPOO implements Serializable
            stats = rede.getStatsMensais(email,ano);
         } catch(Excepcoes e){
             System.out.println(e);
+            System.out.println("Prima ENTER para continuar..."); input.lerString();
             return;
         }
         
@@ -1199,6 +1265,7 @@ public class GeoCachingPOO implements Serializable
            stats = rede.getStatsAnuais(email);
         } catch(Excepcoes e){
             System.out.println(e);
+            System.out.println("Prima ENTER para continuar...."); input.lerString();
             return;
         }
         
