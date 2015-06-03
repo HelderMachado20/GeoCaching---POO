@@ -55,9 +55,8 @@ public class GeoCachingPOO implements Serializable
                             else { title(); } 
                             break; 
                          }
-                case 2 : { 
-                            if(loginAdmin()) { saveFile(); menuPrincipal(); }
-                            else{ System.out.println("Password Errada! Prima enter para continuar.....\n"); input.lerString(); }
+                case 2 : {  if(criaNovo()) { menuPrincipal(); }
+                            else{ System.out.println("Credenciais inválidas! Prima enter para continuar.....\n"); input.lerString(); }
                             break; 
                          }
                 default: { 
@@ -71,7 +70,24 @@ public class GeoCachingPOO implements Serializable
         System.exit(0);
     }
     
-    
+    public static boolean criaNovo(){
+        System.out.println("Insira email de admin: ");
+        String email = input.lerString();
+        System.out.println("Insira password de admin: ");
+        String password = input.lerString();
+        
+        try{
+            rede.validaLoginAdmin(email,password);
+            user = rede.getAdmin();
+            saveFile();
+            return true;
+        } catch (Excepcoes e) {
+            System.out.println(e);
+            user = new Utilizador();
+            return false;
+        }
+        
+    }
     /********************************************************************************************************************************************************************
      *************************************************************** MENU PARA FAZER LOGIN ****************************************************************************** 
      ********************************************************************************************************************************************************************
@@ -89,21 +105,12 @@ public class GeoCachingPOO implements Serializable
         
         while(op!=0){ 
             title();
-            System.out.println("1 - LoginAdmin\n2 - LoginUser\n3 - Criar conta\n0 - Voltar atrás");
+            System.out.println("1 - Login\n2 - Criar conta\n0 - Voltar atrás");
             op = input.lerInt();
             title();
             switch(op){
                case 0 : { break;} 
                case 1 : {  
-                            if(loginAdmin()) {
-                                menuPrincipal();
-                           }
-                           else{
-                               System.out.println("Credenciais inválidas!\nPrima ENTER para continuar..."); input.lerString();
-                           }
-                           break;
-                        }
-               case 2 : { 
                            if(login()){ //se o login for válido vai para o menu principal. Dados de utilizador ficam carregados na variável user
                             menuPrincipal();
                            }
@@ -112,7 +119,7 @@ public class GeoCachingPOO implements Serializable
                            }
                            break;
                         }
-               case 3 : {
+               case 2 : {
                            criaConta(); //cria conta e vai para o menu principal. Dados de utilizador ficam carregado na variável user
                            menuPrincipal();
                            break;
@@ -125,30 +132,11 @@ public class GeoCachingPOO implements Serializable
     
     /********************************************************************************************************************************************************************
      ******************************************************************************************************************************************************************** 
-     ********************************************************   VALIDAÇÕES DE AMBOS OS LOGINS    ************************************************************************
+     **************************************************************   VALIDAÇÕES DE LOGIN    ****************************************************************************
      ********************************************************************************************************************************************************************/
     
      
-    /**
-     * FUNÇÃO DE LEITURA DE LOGIN DO ADMIN
-     * Esta função pede ao administrador para inserir as suas credenciais de login, email e password, e caso estejam corretas retorna true, caso contrário retorna false.
-     */
-    public static boolean loginAdmin(){
-        String e,p;
-        System.out.println("Insira login de admin!\n");        
-        System.out.println("Email: ");   
-        e = input.lerString();
-        System.out.println("Password: ");        
-        p = input.lerString();
-        user = rede.getAdmin();     //user é a variável global utilizada para guardar o utilizador atual
-        
-        if(e.equals(user.getEmail()) && user.validaLogin(p)){
-            return true;
-        }
-        user = new Utilizador(); //caso o login seja inválido tiram-se os dados guardados em user que foram carregados anteriormente
-        return false;
-    }
-    
+       
     /**
      * FUNÇÃO DE LEITURA DO LOGIN DE UM USER
      * Esta função pede ao utilizador para inserir as suas credenciais de login, email e password, e caso estejam corretas retorna true, caso contrário retorna false.
@@ -159,17 +147,19 @@ public class GeoCachingPOO implements Serializable
         email = input.lerString();
         System.out.println("Insira password: ");
         pass = input.lerString();
-        user = rede.getUtilizador(email);   //user é a variável global utilizada para guardar o utilizador atual
-        if(user!=null){
-            return user.validaLogin(pass);
+        try {
+            rede.validaLogin(email,pass);
+            user = rede.getUtilizador(email);
+            return true;
+        } catch(Excepcoes e){
+            System.out.println(e);
+            return false;
         }
-        user = new Utilizador(); //caso o login seja inválido tiram-se os dados guardados em user que foram carregados anteriormente
-        return false;
     }
     
     
     /********************************************************************************************************************************************************************
-     *************************************************************** MENU PRINCIPAL ************************************************************************************* 
+     *************************************************************** MENU PRINCIPAL ******************************************************************************** 
      ********************************************************************************************************************************************************************
      ********************************************************************************************************************************************************************/
     
@@ -182,13 +172,20 @@ public class GeoCachingPOO implements Serializable
         int op;
         while(!sair){
             title();
-            System.out.println("\n1 - Lista de utilizadores\n2 - Amigos\n3 - Caches & Atividades\n7 - Editar dados pessoais\n8 - Gravar \n9 - Logout");
+            System.out.println("\n1 - Lista de utilizadores\n2 - Amigos\n3 - Caches & Atividades\n4 - Consultar dados pessoais\n"+
+                               "5 - Editar dados pessoais\n6 - Estatísticas Mensais GeoCachingPOO\n7 - Estatísticas Anuais GeoCachingPOO(Ainda por implementar)\n"+
+                               "8 - Gravar \n9 - Logout");
             op = input.lerInt();
             switch(op){
                 case 1 : { System.out.println(rede.getListaUsers()+"\nPrima ENTER para continuar..."); input.lerString(); break;}
                 case 2 : { menuAmigos(); break;}
                 case 3 : { menuCaches(); break; }
-                case 7 : { menuEditarDados(); break; }
+                case 4 : { System.out.println(user.toString());
+                           System.out.println("\nPrima ENTER para continuar....\n"); input.lerString();
+                           break;
+                         }
+                case 5 : { menuEditarDados(); break; }
+                case 6 : { statsMensaisApp(); break; }
                 case 8 : { saveFile(); break;  }
                 case 9 : {   
                             int grava=0;
@@ -208,7 +205,52 @@ public class GeoCachingPOO implements Serializable
         menuLogin(); 
     }
     
-    
+    public static void statsMensaisApp(){
+        System.out.println("Qual o ano a consultar?");
+        int ano = input.lerInt();
+        String ncaches = "";
+        ArrayList<ArrayList<String>> cs = new ArrayList<>();
+        ArrayList<ArrayList<String>> uu = new ArrayList<>();
+        uu = rede.registosMensais(ano);
+        cs = rede.cachesMensais(ano);
+        
+        int op=-1;
+        
+        while(op!=0){
+            
+            title();
+            System.out.println("\n\n");
+            for(int i = 0 ; i < 12 ; i++){
+                System.out.println("Mês "+(i+1)+" -> Utilizadores registados: "+uu.get(i).size()+" | Caches criadas: "+cs.get(i).size());
+            }
+            System.out.println("\n\n");
+        
+            System.out.println("1 - Consultar emails registados num dado mês\n2 - Consultar códigos de caches criadas num dado mês\n0 - Sair");
+            op = input.lerInt();
+            switch(op)
+            {
+                case 0 : { break; }
+                case 1 : { System.out.println("Qual o mês a consultar?"); int mes = input.lerInt(); mes--;
+                           if(mes<0 || mes>11) { System.out.println("Mês inválido"); break; }
+                           else { System.out.println("____________________________\n");
+                                  for(String s : uu.get(mes)) { System.out.println(s); }
+                                  System.out.println("____________________________");                                  
+                                  System.out.println("Prima ENTER para continuar..."); input.lerString(); }
+                           break;
+                         }
+                case 2 : { System.out.println("Qual o mês a consultar?"); int mes = input.lerInt(); mes--;
+                           if(mes<0 || mes>11) { System.out.println("Mês inválido"); break; }
+                           else { System.out.println("____________________________\n");   
+                                  for(String s : cs.get(mes)) { System.out.println(s); } 
+                                  System.out.println("____________________________");   
+                                  System.out.println("Prima ENTER para continuar..."); input.lerString(); }
+                            break;
+                         }
+                default: { System.out.println("Opção inválida! Prima ENTER para continuar..."); input.lerString(); break; }
+            }
+        }
+        
+    }
     /********************************************************************************************************************************************************************
      ******************************************************* MENU E FUNÇÕES RESPECTIVAS A AMIZADES ********************************************************************** 
      ********************************************************************************************************************************************************************
@@ -222,7 +264,8 @@ public class GeoCachingPOO implements Serializable
         int op=-1;
         while(op!=0){
             title();
-            System.out.println("1 - Lista de amigos\n2 - Lista de pedidos\n3 - Aceitar pedido\n4 - Remover pedido \n5 - Enviar pedido\n6 - Remover amigo\n7 - Consultar dados\n0 - Sair\n");
+            System.out.println("1 - Lista de amigos\n2 - Lista de pedidos\n3 - Aceitar pedido\n4 - Remover pedido \n5 - Enviar pedido\n6 - Remover amigo\n"+
+                               "7 - Consultar dados pessoais de uma amigo\n0 - Sair\n");
             op = input.lerInt();
             switch(op){                
                 case 0 : { break; }
@@ -369,28 +412,20 @@ public class GeoCachingPOO implements Serializable
         String email; int op=-1;  Utilizador amigo;
         System.out.println("Insira email do utilizador a consultar\n");
         email = input.lerString();
-        if(!rede.existeAmigo(email,user.getEmail())) {  System.out.println("Este utilizador não existe ou não está na sua lista de amigos!\nPrima ENTER para continuar..."); 
-                                                        input.lerString();
-                                                        return;
-                                                     }
+        
+        if(!rede.existeAmigo(email,user.getEmail()) && !user.getEmail().equals("admin@geocachingpoo.pt")) 
+            {  System.out.println("Este utilizador não está na sua lista de amigos!\nPrima ENTER para continuar..."); 
+               input.lerString();
+               return;
+            }
                                                      
         try{
             amigo = rede.getUser(email).clone();
+            System.out.println(amigo.toString()); System.out.println("Prima ENTER para continuar.....\n"); input.lerString();
         }
         catch(Excepcoes e){
             System.out.println(e);
             return;
-        }
-            
-         while(op!=0){
-            title();
-            System.out.println("1 - Consultar dados pessoais\n0 - Sair\n");
-            op = input.lerInt();
-            switch(op){
-                case 1 :  { System.out.println(amigo.toString()); System.out.println("Prima ENTER para continuar.....\n"); input.lerString(); break; } 
-                case 0 :  { break; }    
-                default : { System.out.println("Opção inválida! Prima ENTER para voltar a tentar.....\n"); input.lerString(); }
-            }
         }
         
     }
@@ -437,7 +472,11 @@ public class GeoCachingPOO implements Serializable
             if(validaData(ano,mes,dia)) { flagAno = 1; }
             else { System.out.println("Data inválida"); }
         }
-        user = new Utilizador(email,password,nome,genero,morada,ano,mes,dia);
+        GregorianCalendar dn = new GregorianCalendar(ano,mes,dia);
+        GregorianCalendar dr = new GregorianCalendar();//data de registo --> HOJE
+        
+        
+        user = new Utilizador(email,password,nome,genero,morada, dn ,dr);
         try {
             rede.insereNovo(email,user);
         }
@@ -479,7 +518,8 @@ public class GeoCachingPOO implements Serializable
                 case 6: {  System.out.println("Insira nova data\nAno: "); int ano = input.lerInt();
                            System.out.println("Mes: "); int mes = input.lerInt(); mes--;
                            System.out.println("Dia: "); int dia = input.lerInt();
-                           if(validaData(ano,mes,dia)) { user.setDataNasc(ano,mes,dia); }
+                           GregorianCalendar dn = new GregorianCalendar(ano,mes,dia);
+                           if(validaData(ano,mes,dia)) { user.setDataNasc(dn); }
                            else {  System.out.println("Data inválida!"); input.lerString(); }
                            break;
                         }                
@@ -567,7 +607,7 @@ public class GeoCachingPOO implements Serializable
             }
         }
         
-        while(flagAno!=1){
+        /*while(flagAno!=1){
             System.out.println("Data de criação:\nANO: ");
             ano = input.lerInt();
             System.out.println("MES: ");
@@ -578,7 +618,7 @@ public class GeoCachingPOO implements Serializable
                 data = new GregorianCalendar(ano, mes, dia);
                 flagAno = 1; }
             else { System.out.println("Data inválida"); }
-        }
+        }*/
         
         System.out.println("Insira decrição da cache:" );
         String descricao = input.lerString();
@@ -846,12 +886,12 @@ public class GeoCachingPOO implements Serializable
         
         try{
             ut = rede.getUser(email);
-            if( rede.existeAmigo(email, user.getEmail() )   ){
+            if( rede.existeAmigo(email, user.getEmail() ) || user.getEmail().equals("admin@geocachinpoo.pt")  ){
                 switch(op){
                     case 5: { ultimasDez(email); break; } 
                     case 6: { consultaAtividades(email); break; }
-                    case 8:{ statsMensais(email,0); break; }
-                    case 9:{ statsAnuais(email); break; }
+                    case 8: { statsMensais(email,0); break; }
+                    case 9: { statsAnuais(email); break; }
                     default:{ System.out.println("Erro!"); break; }
                 }
             }
@@ -1295,8 +1335,7 @@ public class GeoCachingPOO implements Serializable
         title();
         rd.close();
         return true;
-    }
-    
+    }    
     
     /**
      * CABEÇALHO DA APLICAÇÃO

@@ -7,4 +7,6 @@ comment2.params=mc
 comment2.target=VirtualCache(VirtualCache)
 comment3.params=
 comment3.target=java.lang.String\ toString()
-numComments=4
+comment4.params=
+comment4.target=VirtualCache\ clone()
+numComments=5

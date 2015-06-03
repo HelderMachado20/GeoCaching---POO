@@ -17,4 +17,6 @@ comment6.params=lista
 comment6.target=void\ setListaCoord(java.util.ArrayList)
 comment7.params=
 comment7.target=java.lang.String\ toString()
-numComments=8
+comment8.params=
+comment8.target=MultiCache\ clone()
+numComments=9

@@ -8,6 +8,7 @@
 
 import java.io.Serializable;
 import java.util.GregorianCalendar;
+import java.util.Calendar;
 
 public abstract class Cache implements Serializable
 {
@@ -56,7 +57,8 @@ public abstract class Cache implements Serializable
     public String getDescricao()       { return this.descricao_extra; }
     public Coordenadas getCoordenadas(){ return this.coord;           }
     public String getCriador()         { return this.criador;         }
-    
+    public int getAno()                { return this.data.get(Calendar.YEAR); }
+    public int getMes()                { return this.data.get(Calendar.MONTH); }
     /*
      * SETTERS
      */
@@ -65,6 +67,5 @@ public abstract class Cache implements Serializable
     public void setDescricao(String desc)       { this.descricao_extra = desc; }
     public void setCoordenadas(Coordenadas c)   { this.coord = c;              }
     public void setCriador(String criador)      { this.criador = criador;      }
-    
     
 }

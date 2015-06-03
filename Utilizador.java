@@ -23,6 +23,7 @@ public class Utilizador implements Serializable
     private String genero;
     private String morada;
     private GregorianCalendar data_nasc;
+    private GregorianCalendar data_reg;
     private TreeSet<String> amigos;  //lista de emails dos amigos
     private TreeSet<String> pedido_amizade;     //pedidos de amizade pendentes
     private HashMap<String,Atividade> atividades;    //lista de caches descobertas <código da atividade,atividade>
@@ -40,6 +41,7 @@ public class Utilizador implements Serializable
         this.genero = "";
         this.morada = "";
         this.data_nasc = new GregorianCalendar();
+        this.data_reg = new GregorianCalendar();
         this.amigos = new TreeSet<>();
         this.pedido_amizade = new TreeSet<>();
         this.atividades = new HashMap<>();
@@ -47,13 +49,14 @@ public class Utilizador implements Serializable
     }
     
     //Construtor parametrizado
-    public Utilizador(String e, String p, String n, String g, String m, int ano, int mes, int dia){
+    public Utilizador(String e, String p, String n, String g, String m, GregorianCalendar dn, GregorianCalendar dr){
         this.email = e;
         this.password = p;
         this.nome = n;
         this.genero = g;
         this.morada = m;
-        this.data_nasc = new GregorianCalendar(ano,mes,dia);
+        this.data_nasc = dn;
+        this.data_reg = dr;
         this.amigos = new TreeSet<>();
         this.pedido_amizade = new TreeSet<>();
         this.atividades = new HashMap<>();
@@ -68,6 +71,7 @@ public class Utilizador implements Serializable
         this.genero = ut.getGenero();
         this.morada = ut.getMorada();
         this.data_nasc = ut.getDataNasc();
+        this.data_reg = ut.getDataReg();
         this.amigos = ut.getAmigos();
         this.pedido_amizade = ut.getPedidos();
         this.atividades = ut.getAtividades();
@@ -84,6 +88,7 @@ public class Utilizador implements Serializable
     public String getGenero()                     { return this.genero;         }
     public String getMorada()                     { return this.morada;         }
     public GregorianCalendar getDataNasc()        { return this.data_nasc;      }
+    public GregorianCalendar getDataReg()         { return this.data_reg;       }
     public TreeSet<String> getAmigos()            { return this.amigos;         }        //return da lista? uma devemos retornar uma cópia da lista?
     public TreeSet<String> getPedidos()           { return this.pedido_amizade; }
     public HashMap<String,Atividade> getAtividades()   { return this.atividades;     }
@@ -98,11 +103,13 @@ public class Utilizador implements Serializable
     public void setNome(String n)                        { this.nome = n;             }
     public void setGenero(String g)                      { this.genero = g;           }
     public void setMorada(String m)                      { this.morada = m;           }
-    public void setDataNasc(int ano, int mes, int dia)   { this.data_nasc = new GregorianCalendar(ano,mes,dia); }
+    public void setDataNasc(GregorianCalendar d)         { this.data_nasc = d;        }
+    public void setDataReg(GregorianCalendar d)          { this.data_reg = d;         }
     public void setAmigos(TreeSet<String> am)            { this.amigos = am;          }        
     public void setPedidos(TreeSet<String> ped)          { this.pedido_amizade = ped; }
-    public void setAtividades(HashMap<String,Atividade> at)   { this.atividades = at;      }
+    public void setAtividades(HashMap<String,Atividade> at){ this.atividades = at; }
     public void setEventos(TreeSet<String> ev)           { this.eventos = ev;         }
+    
     
     
     /*
@@ -296,7 +303,7 @@ public class Utilizador implements Serializable
                 stats.add(l);
             }
             
-            int ano, ano_atual, mes;
+            int ano, mes;
             Atividade at;
            
             for(String cod : atividades.keySet()){
@@ -316,7 +323,7 @@ public class Utilizador implements Serializable
         else {
             HashMap<Integer,ArrayList<Atividade>> stats = new HashMap<>();
             
-            int ano, ano_atual, mes;
+            int ano, mes;
             Atividade at;
             
                         
@@ -348,6 +355,7 @@ public class Utilizador implements Serializable
         s.append("Género: "+genero+"\n");
         s.append("Morada: "+morada+"\n");
         s.append("Data Nascimento: "+data_nasc.get(Calendar.YEAR)+"/"+(data_nasc.get(Calendar.MONTH)+1)+"/"+data_nasc.get(Calendar.DAY_OF_MONTH)+"\n");
+        s.append("Data Registo: "+data_reg.get(Calendar.YEAR)+"/"+(data_reg.get(Calendar.MONTH)+1)+"/"+data_reg.get(Calendar.DAY_OF_MONTH)+"\n");
         s.append("Lista de Amigos: ");
         for(String email : amigos){
             s.append(email+" - ");
@@ -362,7 +370,7 @@ public class Utilizador implements Serializable
         for(String cod : eventos){
             s.append(cod+" - ");
         }*/ 
-        s.append("\n_____________________________________");
+        s.append("_____________________________________");
         return s.toString();
     }
     

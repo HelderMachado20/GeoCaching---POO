@@ -56,7 +56,7 @@ public class MultiCache extends Cache implements Serializable
             
             s.append("Código: "+getCodigo()+"\n");
             s.append("Criador: "+getCriador()+"\n");
-            s.append("Data: "+d.get(Calendar.YEAR)+"/"+(d.get(Calendar.MONTH)+1)+"/"+d.get(Calendar.DAY_OF_MONTH)+"\n");    
+            s.append("Data criação: "+d.get(Calendar.YEAR)+"/"+(d.get(Calendar.MONTH)+1)+"/"+d.get(Calendar.DAY_OF_MONTH)+"\n");    
             s.append("Descrição: "+getDescricao()+"\n");    
             s.append("Objecto/conteúdo: "+obj+"\n");
             s.append("Coordenadas a visitar para encontrar localização desta cache: \n");
@@ -65,4 +65,9 @@ public class MultiCache extends Cache implements Serializable
             }
             return s.toString();
         }
+    
+    
+    public MultiCache clone(){
+        return new MultiCache(this);
+    }
 }

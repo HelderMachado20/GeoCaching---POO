@@ -10,7 +10,7 @@ import java.io.Serializable;
 import java.util.HashMap;
 import java.util.ArrayList;
 import java.util.GregorianCalendar;
-
+import java.util.Calendar;
 
 public class Rede implements Serializable
 {
@@ -23,7 +23,7 @@ public class Rede implements Serializable
         this.users = new HashMap<String,Utilizador>();
         this.caches = new HashMap<String,Cache>();
         this.reports = new ArrayList<Report>();
-        this.admin = new Utilizador("admin@geocachingpoo.pt","admin","admin","","",1990,0,1);
+        this.admin = new Utilizador("admin@geocachingpoo.pt","admin","admin","","",new GregorianCalendar(), new GregorianCalendar());
         this.users.put(admin.getEmail(), admin);
     }
     
@@ -32,8 +32,10 @@ public class Rede implements Serializable
     public HashMap<String,Utilizador> getUtilizadores() { return this.users; }    
     public ArrayList<Report> getReports(){ return this.reports; }
     
-    public Utilizador getUtilizador(String email){
-        return users.get(email);
+    public Utilizador getUtilizador(String email) throws Excepcoes {
+        Utilizador u = users.get(email);
+        if(u==null) { throw new Excepcoes("Utilizador não existe!\n"); }
+            else { return u; }
     }
     
     public String getListaUsers(){
@@ -51,6 +53,19 @@ public class Rede implements Serializable
         }
         s.append("------------------------------------------\n");
         return s.toString();
+    }
+    
+    public boolean validaLoginAdmin(String email, String pass) throws Excepcoes {
+        if(!this.admin.getEmail().equals(email)) { throw new Excepcoes("Email incorreto\n"); }
+        if(!admin.validaLogin(pass)) { throw new Excepcoes("Passe incorreta!\n"); }
+        return true;
+    }
+    
+    public boolean validaLogin(String email, String pass) throws Excepcoes {
+        Utilizador u = users.get(email);
+        if(u==null) { throw new Excepcoes("Utilizador não existe\n"); }
+        if(!u.validaLogin(pass)) { throw new Excepcoes("Passe incorreta!\n"); }
+        return true;
     }
     
     public void insereNovo(String e, Utilizador ut) throws Excepcoes{
@@ -275,10 +290,49 @@ public class Rede implements Serializable
         return at;
     }
     
+    public ArrayList<ArrayList<String>> cachesMensais(int year){
+            ArrayList<ArrayList<String>> stats = new ArrayList<>(12);
+            for(int i = 0 ; i<12 ; i++){                
+                ArrayList<String> l = new ArrayList<>();
+                stats.add(l);
+            }
+            
+            int ano, mes;
+            Cache cc;
+           
+            for(String cod : caches.keySet()){
+                cc = caches.get(cod);
+                ano = cc.getAno();
+                mes = cc.getMes();
+                if(ano == year){ 
+                    stats.get(mes).add(cc.getClass().getName()+": "+cc.getCodigo()); }
+            }
+        
+            return stats;
+    }
     
-    
-    
-    
+    public ArrayList<ArrayList<String>> registosMensais(int year){        
+            ArrayList<ArrayList<String>> stats = new ArrayList<>(12);
+            for(int i = 0 ; i<12 ; i++){                
+                ArrayList<String> l = new ArrayList<>();
+                stats.add(l);
+            }
+            
+            int ano, mes;
+            Utilizador ut;
+            GregorianCalendar dr;
+           
+            for(String email : users.keySet()){
+                ut = users.get(email);
+                dr = ut.getDataReg();
+                ano = dr.get(Calendar.YEAR);
+                mes = dr.get(Calendar.MONTH);
+                if(ano == year){ stats.get(mes).add(ut.getEmail()); }
+            }
+        
+            return stats;
+       
+    }
     
     
     

@@ -31,11 +31,16 @@ public class VirtualCache extends Cache implements Serializable
             
             s.append("Código: "+getCodigo()+"\n");
             s.append("Criador: "+getCriador()+"\n");
-            s.append("Data: "+d.get(Calendar.YEAR)+"/"+(d.get(Calendar.MONTH)+1)+"/"+d.get(Calendar.DAY_OF_MONTH)+"\n");  
+            s.append("Data criação: "+d.get(Calendar.YEAR)+"/"+(d.get(Calendar.MONTH)+1)+"/"+d.get(Calendar.DAY_OF_MONTH)+"\n");  
             s.append("Descrição: "+getDescricao()+"\n");    
             s.append("Coordenadas: "+getCoordenadas().toString()+"\n");
             
             return s.toString();
+        }
+        
+    
+        public VirtualCache clone(){
+        return new VirtualCache(this);
         }
 }
 
